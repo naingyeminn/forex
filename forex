@@ -1,0 +1,75 @@
+#!/bin/bash
+CBREGEX="[0-9][0-9][0-9][0-9]?"
+KBZREGEX="class.*[0-9][0-9][0-9][0-9]?"
+CBBANNER=">>> CB Bank <<<"
+KBZBANNER=">>> KBZ Bank <<<"
+
+getcb() {
+    cbrates=()
+    exrate=(`curl -s -A 'Mozilla/5.0 (X11; Linux x86_64; rv:30.0) Gecko/20100101 Firefox/30.0' http://www.cbbank.com.mm/exchange_rate.aspx | grep -E 'width.*[0-9][0-9][0-9][0-9]?'`)
+    for var in "${exrate[@]}"; do
+        if [[ $var =~ $CBREGEX ]]; then
+            rates=${var#*>}
+            rates=${rates%<*}
+            cbrates+=($rates)
+        fi
+    done
+    echo ${cbrates[@]}
+}
+
+getkbz() {
+    kbzrates=()
+    exrate=(`curl -s -A 'Mozilla/5.0 (X11; Linux x86_64; rv:30.0) Gecko/20100101 Firefox/30.0' http://www.kbzbank.com | grep -E 'td class.*[0-9][0-9][0-9][0-9]?'`)
+    for var in "${exrate[@]}"; do
+        if [[ $var =~ $KBZREGEX ]]; then
+            rates=${var#*>}
+            rates=${rates%<*}
+            kbzrates+=($rates)
+        fi
+    done
+    echo ${kbzrates[@]}
+}
+
+printout() {
+    rate=(`$1`)
+    echo -e "CURRENCY BUY SELL\nUSD ${rate[0]} ${rate[1]}\nEUR ${rate[2]} ${rate[3]}\nSGD ${rate[4]} ${rate[5]}" | column -t
+}
+
+usage() {
+    echo "Usage: forex [-h|--help] [-b|--bank cb|kbz]"
+    echo "  -h | --help  Help. Display this message and quit."
+    echo "  -b | --bank  Specify bank name as 'cb' for CB Bank and 'kbz' for KBZ Bank."
+    exit
+}
+
+if [ -z "$1" ]; then
+    echo $CBBANNER
+    printout getcb
+    echo -e "\n$KBZBANNER"
+    printout getkbz
+
+else
+    case "$1" in
+         -h|--help)
+            usage
+            ;;
+        -b|--bank)
+            bank=$2
+            case "$2" in
+                cb)
+                    echo $CBBANNER
+                    printout getcb
+                    ;;
+                kbz)
+                    echo $KBZBANNER
+                    printout getkbz
+                    ;;
+                *)
+                    usage
+            esac
+            ;;
+        *)
+            usage
+            ;;
+    esac
+fi
