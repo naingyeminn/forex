@@ -6,7 +6,11 @@ KBZBANNER=">>> KBZ Bank <<<"
 
 getcb() {
     cbrates=()
-    exrate=(`curl -s -A 'Mozilla/5.0 (X11; Linux x86_64; rv:30.0) Gecko/20100101 Firefox/30.0' http://www.cbbank.com.mm/exchange_rate.aspx | grep -E 'width.*[0-9][0-9][0-9][0-9]?'`)
+    if [[ -x `which curl` ]]; then
+    	exrate=(`curl -s -A 'Mozilla/5.0 (X11; Linux x86_64; rv:30.0) Gecko/20100101 Firefox/30.0' http://www.cbbank.com.mm/exchange_rate.aspx | grep -E 'width.*[0-9][0-9][0-9][0-9]?'`)
+    else
+        exrate=(`wget -q -U 'Mozilla/5.0 (X11; Linux x86_64; rv:30.0) Gecko/20100101 Firefox/30.0' -O - http://www.cbbank.com.mm/exchange_rate.aspx | grep -E 'width.*[0-9][0-9][0-9][0-9]?'`)
+    fi
     for var in "${exrate[@]}"; do
         if [[ $var =~ $CBREGEX ]]; then
             rates=${var#*>}
@@ -19,7 +23,11 @@ getcb() {
 
 getkbz() {
     kbzrates=()
-    exrate=(`curl -s -A 'Mozilla/5.0 (X11; Linux x86_64; rv:30.0) Gecko/20100101 Firefox/30.0' http://www.kbzbank.com | grep -E 'td class.*[0-9][0-9][0-9][0-9]?'`)
+    if [[ -x `which curl` ]]; then
+        exrate=(`curl -s -A 'Mozilla/5.0 (X11; Linux x86_64; rv:30.0) Gecko/20100101 Firefox/30.0' http://www.kbzbank.com | grep -E 'td class.*[0-9][0-9][0-9][0-9]?'`)
+    else
+        exrate=(`wget -q -U 'Mozilla/5.0 (X11; Linux x86_64; rv:30.0) Gecko/20100101 Firefox/30.0' -O - http://www.kbzbank.com | grep -E 'td class.*[0-9][0-9][0-9][0-9]?'`)
+    fi
     for var in "${exrate[@]}"; do
         if [[ $var =~ $KBZREGEX ]]; then
             rates=${var#*>}
@@ -36,9 +44,9 @@ printout() {
 }
 
 usage() {
-    echo "Usage: forex [-h|--help] [-b|--bank cb|kbz]"
-    echo "  -h | --help  Help. Display this message and quit."
-    echo "  -b | --bank  Specify bank name as 'cb' for CB Bank and 'kbz' for KBZ Bank."
+    echo "Usage: $0 [-h] [-b cb|kbz]"
+    echo "  -h  Help. Display this message and quit."
+    echo "  -b  Specify bank name as cb for CB Bank and kbz for KBZ Bank."
     exit
 }
 

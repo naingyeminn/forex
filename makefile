@@ -1,5 +1,4 @@
 install: uninstall
-	apt-get install curl
 	cp -fv ./forex /usr/local/bin
 
 uninstall:
