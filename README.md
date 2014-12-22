@@ -6,7 +6,7 @@ FOREX is a Shell Script to get foreign currency exchange rate in Myanmar Kyats. 
 
 ##Installation
 
-- Download [vFix](https://github.com/naingyeminn/forex/archive/master.zip) zip file
+- Download [FOREX](https://github.com/naingyeminn/forex/archive/master.zip) zip file
 ```sh
 $ wget https://github.com/naingyeminn/forex/archive/master.zip -O forex.zip
 ```
