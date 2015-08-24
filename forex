@@ -1,8 +1,10 @@
 #!/bin/bash
 CBREGEX="[0-9][0-9][0-9][0-9]?"
 KBZREGEX="class.*[0-9][0-9][0-9][0-9]?"
+AYAREGEX="class.*[0-9][0-9][0-9][0-9]?"
 CBBANNER=">>> CB Bank <<<"
 KBZBANNER=">>> KBZ Bank <<<"
+AYABANNER=">>> AYA Bank <<<"
 
 getcb() {
     cbrates=()
@@ -38,15 +40,32 @@ getkbz() {
     echo ${kbzrates[@]}
 }
 
+getaya() {
+    ayarates=()
+    if [[ -x `which curl` ]]; then
+        exrate=(`curl -s -A 'Mozilla/5.0 (X11; Linux x86_64; rv:30.0) Gecko/20100101 Firefox/30.0' http://ayabank.com | grep -E 'td class.*[0-9][0-9][0-9][0-9]?'`)
+    else
+        exrate=(`wget -q -U 'Mozilla/5.0 (X11; Linux x86_64; rv:30.0) Gecko/20100101 Firefox/30.0' -O - http://ayabank.com | grep -E 'td class.*[0-9][0-9][0-9][0-9]?'`)
+    fi
+    for var in "${exrate[@]}"; do
+        if [[ $var =~ $AYAREGEX ]]; then
+            rates=${var#*>}
+            rates=${rates%%<*}
+            ayarates+=($rates)
+        fi
+    done
+    echo ${ayarates[@]}
+}
+
 printout() {
     rate=(`$1`)
     echo -e "CURRENCY BUY SELL\nUSD ${rate[0]} ${rate[1]}\nEUR ${rate[2]} ${rate[3]}\nSGD ${rate[4]} ${rate[5]}" | column -t
 }
 
 usage() {
-    echo "Usage: $0 [-h] [-b cb|kbz]"
+    echo "Usage: $0 [-h] [-b cb|kbz|aya]"
     echo "  -h  Help. Display this message and quit."
-    echo "  -b  Specify bank name as cb for CB Bank and kbz for KBZ Bank."
+    echo "  -b  Specify bank name as cb for CB Bank, kbz for KBZ Bank and aya for AYA Bank."
     exit
 }
 
@@ -55,6 +74,8 @@ if [ -z "$1" ]; then
     printout getcb
     echo -e "\n$KBZBANNER"
     printout getkbz
+    echo -e "\n$AYABANNER"
+    printout getaya
 
 else
     case "$1" in
@@ -70,6 +91,10 @@ else
                     ;;
                 kbz)
                     echo $KBZBANNER
+                    printout getkbz
+                    ;;
+                aya)
+                    echo $AYABANNER
                     printout getkbz
                     ;;
                 *)
