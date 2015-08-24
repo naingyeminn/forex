@@ -24,9 +24,9 @@ getcb() {
 getkbz() {
     kbzrates=()
     if [[ -x `which curl` ]]; then
-        exrate=(`curl -s -A 'Mozilla/5.0 (X11; Linux x86_64; rv:30.0) Gecko/20100101 Firefox/30.0' http://www.kbzbank.com | grep -E 'td class.*[0-9][0-9][0-9][0-9]?'`)
+        exrate=(`curl -s -A 'Mozilla/5.0 (X11; Linux x86_64; rv:30.0) Gecko/20100101 Firefox/30.0' https://www.kbzbank.com | grep -E 'td class.*[0-9][0-9][0-9][0-9]?'`)
     else
-        exrate=(`wget -q -U 'Mozilla/5.0 (X11; Linux x86_64; rv:30.0) Gecko/20100101 Firefox/30.0' -O - http://www.kbzbank.com | grep -E 'td class.*[0-9][0-9][0-9][0-9]?'`)
+        exrate=(`wget -q -U 'Mozilla/5.0 (X11; Linux x86_64; rv:30.0) Gecko/20100101 Firefox/30.0' -O - https://www.kbzbank.com | grep -E 'td class.*[0-9][0-9][0-9][0-9]?'`)
     fi
     for var in "${exrate[@]}"; do
         if [[ $var =~ $KBZREGEX ]]; then
