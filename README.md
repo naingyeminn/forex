@@ -2,7 +2,7 @@
 
 ##About
 
-FOREX is a Shell Script to get foreign currency exchange rate in Myanmar Kyats. This script fetches the information from CB Bank and KBZ Bank websites and shows excange rates for USD, EUR, and SGD.
+FOREX is a Shell Script to get foreign currency exchange rate in Myanmar Kyats. This script fetches the information from CB Bank, KBZ Bank and AYA Bank websites and shows excange rates for USD, EUR, and SGD.
 
 ##Installation
 
