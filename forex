@@ -49,7 +49,7 @@ getaya() {
     fi
     for var in "${exrate[@]}"; do
         if [[ $var =~ $AYAREGEX ]]; then
-            rates=${var#*>}
+            rates=${var#*\">}
             rates=${rates%%<*}
             ayarates+=($rates)
         fi
