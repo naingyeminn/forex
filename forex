@@ -1,7 +1,7 @@
 #!/bin/bash
 CBREGEX="[0-9][0-9][0-9][0-9]?"
 KBZREGEX="class.*[0-9][0-9][0-9][0-9]?"
-AYAREGEX="class.*[0-9][0-9][0-9][0-9]?"
+AYAREGEX="[0-9][0-9][0-9][0-9]?"
 CBBANNER=">>> CB Bank <<<"
 KBZBANNER=">>> KBZ Bank <<<"
 AYABANNER=">>> AYA Bank <<<"
@@ -95,7 +95,7 @@ else
                     ;;
                 aya)
                     echo $AYABANNER
-                    printout getkbz
+                    printout getaya
                     ;;
                 *)
                     usage
