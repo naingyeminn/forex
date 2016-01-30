@@ -69,7 +69,8 @@ usage() {
     exit
 }
 
-if [ -z "$1" ]; then
+if [[ -x `which curl` ]]; then
+  if [ -z "$1" ]; then
     echo $CBBANNER
     printout getcb
     echo -e "\n$KBZBANNER"
@@ -77,7 +78,7 @@ if [ -z "$1" ]; then
     echo -e "\n$AYABANNER"
     printout getaya
 
-else
+  else
     case "$1" in
          -h|--help)
             usage
@@ -105,4 +106,7 @@ else
             usage
             ;;
     esac
+  fi
+else
+  echo "forex needs curl to work. Install curl first." >&2
 fi
